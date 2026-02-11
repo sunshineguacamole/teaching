@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教授个人网站 - 原型设计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a73e8;
+            --secondary: #5f6368;
+            --bg-gray: #f8f9fa;
+            --border: #dadce0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #fff;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .prototype-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .prototype-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .prototype-header h1 {
+            font-size: 36px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .prototype-header p {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .page-view {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 通用框架样式 */
+        .mockup {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .mockup-browser-bar {
+            height: 40px;
+            background: var(--bg-gray);
+            border-bottom: 1px solid var(--border);
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .browser-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff5f56;
+        }
+
+        .browser-dot:nth-child(2) { background: #ffbd2e; }
+        .browser-dot:nth-child(3) { background: #27c93f; }
+
+        /* 页面布局 */
+        .mockup-content {
+            min-height: 600px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 40px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .header-nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 15px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .header-nav a:hover {
+            background: var(--bg-gray);
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .hero-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            background: #e8f0fe;
+            color: var(--primary);
+        }
+
+        .card-meta {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* List Items */
+        .list-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+
+        .list-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.15);
+        }
+
+        .list-item-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .list-item-content {
+            flex: 1;
+        }
+
+        .list-item-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .list-item-meta {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .list-item-action {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg-gray);
+        }
+
+        th {
+            text-align: left;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: var(--bg-gray);
+        }
+
+        /* Sidebar */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 40px;
+        }
+
+        .sidebar {
+            background: var(--bg-gray);
+            padding: 25px;
+            border-radius: 12px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .sidebar-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Announcements */
+        .announcement {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        .announcement-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #856404;
+        }
+
+        .announcement-content {
+            font-size: 14px;
+            color: #856404;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #1557b0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+        }
+
+        /* Annotations */
+        .annotation {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .annotation:before {
+            content: '📌';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="prototype-container">
+        <div class="prototype-header">
+            <h1>🎓 教授个人学术网站 - 原型设计</h1>
+            <p>交互式原型预览 | 点击下方按钮切换页面查看</p>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn active" onclick="showPage('home')">首页</button>
+            <button class="nav-btn" onclick="showPage('courses')">课程中心</button>
+            <button class="nav-btn" onclick="showPage('course-detail')">课程详情</button>
+            <button class="nav-btn" onclick="showPage('resources')">资源中心</button>
+            <button class="nav-btn" onclick="showPage('students')">学生指导</button>
+            <button class="nav-btn" onclick="showPage('admin')">后台管理</button>
+        </div>
+
+        <!-- 首页 -->
+        <div id="home" class="page-view active">
+            <div class="mockup">
+                <div class="mockup-browser-bar">
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                </div>
+                <div class="mockup-content">
+                    <!-- Header -->
+                    <div class="header">
+                        <div class="header-top">
+                            <div class="logo">张教授的学术空间</div>
+                            <nav class="header-nav">
+                                <a href="#home">首页</a>
+                                <a href="#courses">课程</a>
+                                <a href="#resources">资源</a>
+                                <a href="#students">学生</a>
+                                <a href="#contact">联系我</a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Hero Section -->
+                    <div class="hero">
+                        <div class="hero-content">
+                            <h1>张伟 教授</h1>
+                            <p class="hero-subtitle">软件工程系 | 博士生导师</p>
+                            <p style="opacity: 0.9;">专注于软件架构、分布式系统、云计算等领域的教学与科研工作</p>
+                            <div class="hero-tags">
+                                <span class="tag">软件工程</span>
+                                <span class="tag">系统架构</span>
+                                <span class="tag">云计算</span>
+                                <span class="tag">分布式系统</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="main-content">
+                        <div class="two-column">
+                            <div>
+                                <!-- 最新通知 -->
+                                <div class="section">
+                                    <h2 class="section-title">📢 最新通知</h2>
+                                    <div class="announcement">
+                                        <div class="announcement-title">🔔 重要：下周一课程调整</div>
+                                        <div class="announcement-content">
+                                            由于学术会议，原定下周一的《软件架构》课程调整至周三下午2:00-4:00，请同学们相互转告。
+                                        </div>
+                                    </div>
+                                    <div class="announcement">
+                                        <div class="announcement-title">📝 作业提醒</div>
+                                        <div class="announcement-content">
+                                            《软件工程基础》第三次作业将于本周五截止，请尚未提交的同学抓紧时间。
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 本学期课程 -->
+                                <div class="section">
+                                    <h2 class="section-title">📚 本学期课程</h2>
+                                    <div class="card-grid">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="card-title">软件工程基础</div>
+                                                <div class="card-badge">本科</div>
+                                            </div>
+                                            <div class="card-meta">周二 14:00-16:00 | 教学楼 A301</div>
+                                            <div class="card-description">
+                                                介绍软件工程的基本概念、开发流程、设计模式等核心知识。
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="card-title">高级软件架构</div>
+                                                <div class="card-badge">研究生</div>
+                                            </div>
+                                            <div class="card-meta">周三 09:00-11:00 | 科研楼 B205</div>
+                                            <div class="card-description">
+                                                深入讲解微服务架构、分布式系统设计、云原生应用开发。
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="card-title">软件项目管理</div>
+                                                <div class="card-badge">研究生</div>
+                                            </div>
+                                            <div class="card-meta">周五 14:00-16:00 | 科研楼 B205</div>
+                                            <div class="card-description">
+                                                敏捷开发、DevOps实践、团队协作与项目管理方法论。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar -->
+                            <div>
+                                <div class="sidebar">
+                                    <div class="sidebar-section">
+                                        <div class="sidebar-title">📅 本周日程</div>
+                                        <div class="sidebar-item">周二 14:00 - 软件工程基础</div>
+                                        <div class="sidebar-item">周三 09:00 - 高级软件架构</div>
+                                        <div class="sidebar-item">周四 15:00 - 研讨会</div>
+                                        <div class="sidebar-item">周五 14:00 - 软件项目管理</div>
+                                    </div>
+                                    <div class="sidebar-section">
+                                        <div class="sidebar-title">🎯 快速链接</div>
+                                        <div class="sidebar-item">课程资料下载</div>
+                                        <div class="sidebar-item">作业提交</div>
+                                        <div class="sidebar-item">在线答疑</div>
+                                        <div class="sidebar-item">课程评价</div>
+                                    </div>
+                                    <div class="sidebar-section">
+                                        <div class="sidebar-title">📊 统计信息</div>
+                                        <div style="padding: 10px; background: white; border-radius: 6px; margin-bottom: 8px;">
+                                            <div style="font-size: 12px; color: var(--text-secondary);">在读学生</div>
+                                            <div style="font-size: 24px; font-weight: bold; color: var(--primary);">23 人</div>
+                                        </div>
+                                        <div style="padding: 10px; background: white; border-radius: 6px;">
+                                            <div style="font-size: 12px; color: var(--text-secondary);">课程资源</div>
+                                            <div style="font-size: 24px; font-weight: bold; color: var(--primary);">156 份</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="footer">
+                        <div class="footer-content">
+                            <div class="footer-links">
+                                <a href="#">学校主页</a>
+                                <a href="#">学院主页</a>
+                                <a href="#">科研系统</a>
+                                <a href="#">教务系统</a>
+                            </div>
+                            <p style="opacity: 0.7; font-size: 14px;">© 2024 张伟教授 | 某某大学计算机学院</p>
+                            <p style="opacity: 0.7; font-size: 13px; margin-top: 10px;">办公室：科研楼 B306 | 邮箱：zhang.wei@university.edu.cn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note" style="margin-top: 30px;">
+                <strong>设计说明：</strong><br>
+                • 首页采用清晰的信息层次结构，重要信息前置<br>
+                • 使用卡片式设计，便于浏览和点击<br>
+                • 侧边栏提供快速导航和重要信息<br>
+                • 响应式设计，适配移动端访问
+            </div>
+        </div>
+
+        <!-- 课程中心 -->
+        <div id="courses" class="page-view">
+            <div class="mockup">
+                <div class="mockup-browser-bar">
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                </div>
+                <div class="mockup-content">
+                    <div class="header">
+                        <div class="header-top">
+                            <div class="logo">张教授的学术空间</div>
+                            <nav class="header-nav">
+                                <a href="#home">首页</a>
+                                <a href="#courses" style="background: var(--bg-gray); color: var(--primary);">课程</a>
+                                <a href="#resources">资源</a>
+                                <a href="#students">学生</a>
+                                <a href="#contact">联系我</a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="main-content">
+                        <h1 style="font-size: 32px; margin-bottom: 10px;">📚 课程中心</h1>
+                        <p style="color: var(--text-secondary); margin-bottom: 40px;">所有课程及相关资料</p>
+
+                        <!-- 筛选器 -->
+                        <div style="background: var(--bg-gray); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+                                <div>
+                                    <label style="font-size: 14px; font-weight: 600; margin-right: 10px;">学期：</label>
+                                    <select class="form-input" style="width: auto; display: inline-block;">
+                                        <option>2024春季</option>
+                                        <option>2023秋季</option>
+                                        <option>2023春季</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 14px; font-weight: 600; margin-right: 10px;">层次：</label>
+                                    <select class="form-input" style="width: auto; display: inline-block;">
+                                        <option>全部</option>
+                                        <option>本科</option>
+                                        <option>研究生</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 14px; font-weight: 600; margin-right: 10px;">状态：</label>
+                                    <select class="form-input" style="width: auto; display: inline-block;">
+                                        <option>进行中</option>
+                                        <option>已归档</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 课程列表 -->
+                        <div class="section">
+                            <h2 class="section-title">2024春季学期</h2>
+                            
+                            <div class="list-item">
+                                <div class="list-item-icon">💻</div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">软件工程基础 (CS101)</div>
+                                    <div class="list-item-meta">本科 | 周二 14:00-16:00 | 教学楼 A301 | 已选人数：68人</div>
+                                </div>
+                                <button class="list-item-action">查看详情</button>
+                            </div>
+
+                            <div class="list-item">
+                                <div class="list-item-icon">🏗️</div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">高级软件架构 (CS502)</div>
+                                    <div class="list-item-meta">研究生 | 周三 09:00-11:00 | 科研楼 B205 | 已选人数：32人</div>
+                                </div>
+                                <button class="list-item-action">查看详情</button>
+                            </div>
+
+                            <div class="list-item">
+                                <div class="list-item-icon">📊</div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">软件项目管理 (CS503)</div>
+                                    <div class="list-item-meta">研究生 | 周五 14:00-16:00 | 科研楼 B205 | 已选人数：28人</div>
+                                </div>
+                                <button class="list-item-action">查看详情</button>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h2 class="section-title">2023秋季学期（已归档）</h2>
+                            
+                            <div class="list-item" style="opacity: 0.7;">
+                                <div class="list-item-icon">💻</div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">软件工程基础 (CS101)</div>
+                                    <div class="list-item-meta">本科 | 已结课 | 选课人数：72人</div>
+                                </div>
+                                <button class="list-item-action" style="background: var(--text-secondary);">查看存档</button>
+                            </div>
+
+                            <div class="list-item" style="opacity: 0.7;">
+                                <div class="list-item-icon">☁️</div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">云计算与大数据 (CS504)</div>
+                                    <div class="list-item-meta">研究生 | 已结课 | 选课人数：35人</div>
+                                </div>
+                                <button class="list-item-action" style="background: var(--text-secondary);">查看存档</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note" style="margin-top: 30px;">
+                <strong>设计说明：</strong><br>
+                • 提供学期、层次、状态等多维度筛选<br>
+                • 列表式展示，信息一目了然<br>
+                • 归档课程降低透明度，区分当前和历史课程<br>
+                • 快速查看详情按钮，提升操作效率
+            </div>
+        </div>
+
+        <!-- 课程详情页 -->
+        <div id="course-detail" class="page-view">
+            <div class="mockup">
+                <div class="mockup-browser-bar">
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                </div>
+                <div class="mockup-content">
+                    <div class="header">
+                        <div class="header-top">
+                            <div class="logo">张教授的学术空间</div>
+                            <nav class="header-nav">
+                                <a href="#home">首页</a>
+                                <a href="#courses" style="background: var(--bg-gray); color: var(--primary);">课程</a>
+                                <a href="#resources">资源</a>
+                                <a href="#students">学生</a>
+                                <a href="#contact">联系我</a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="main-content">
+                        <!-- 课程头部 -->
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 12px; color: white; margin-bottom: 40px;">
+                            <div style="display: inline-block; padding: 6px 14px; background: rgba(255,255,255,0.2); border-radius: 20px; font-size: 13px; margin-bottom: 15px;">本科课程</div>
+                            <h1 style="font-size: 36px; margin-bottom: 10px;">软件工程基础</h1>
+                            <p style="opacity: 0.9; font-size: 16px; margin-bottom: 20px;">CS101 | 2024春季学期</p>
+                            <div style="display: flex; gap: 30px; opacity: 0.9;">
+                                <div>📅 周二 14:00-16:00</div>
+                                <div>📍 教学楼 A301</div>
+                                <div>👥 68人选课</div>
+                            </div>
+                        </div>
+
+                        <div class="two-column">
+                            <div>
+                                <!-- Tab 导航 -->
+                                <div style="border-bottom: 2px solid var(--border); margin-bottom: 30px;">
+                                    <div style="display: flex; gap: 0;">
+                                        <div style="padding: 12px 24px; border-bottom: 3px solid var(--primary); margin-bottom: -2px; font-weight: 600; color: var(--primary); cursor: pointer;">课程大纲</div>
+                                        <div style="padding: 12px 24px; color: var(--text-secondary); cursor: pointer;">课程资料</div>
+                                        <div style="padding: 12px 24px; color: var(--text-secondary); cursor: pointer;">作业</div>
+                                        <div style="padding: 12px 24px; color: var(--text-secondary); cursor: pointer;">通知</div>
+                                    </div>
+                                </div>
+
+                                <!-- 课程简介 -->
+                                <div class="section">
+                                    <h3 style="font-size: 20px; margin-bottom: 15px;">📖 课程简介</h3>
+                                    <p style="color: var(--text-secondary); line-height: 1.8;">
+                                        本课程系统地介绍软件工程的基本概念、原理和方法，包括软件开发过程、需求分析、系统设计、编码实现、软件测试、项目管理等内容。通过理论学习和实践项目，使学生掌握软件开发的完整流程和核心技能。
+                                    </p>
+                                </div>
+
+                                <!-- 教学大纲 -->
+                                <div class="section">
+                                    <h3 style="font-size: 20px; margin-bottom: 15px;">📋 教学大纲</h3>
+                                    
+                                    <div style="background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+                                        <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+                                            <div style="font-weight: 600; margin-bottom: 5px;">第1-2周：软件工程概述</div>
+                                            <div style="color: var(--text-secondary); font-size: 14px;">软件危机、软件工程定义、软件生命周期</div>
+                                        </div>
+                                        <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+                                            <div style="font-weight: 600; margin-bottom: 5px;">第3-4周：需求工程</div>
+                                            <div style="color: var(--text-secondary); font-size: 14px;">需求获取、需求分析、用例建模、需求规格说明</div>
+                                        </div>
+                                        <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+                                            <div style="font-weight: 600; margin-bottom: 5px;">第5-7周：系统设计</div>
+                                            <div style="color: var(--text-secondary); font-size: 14px;">架构设计、详细设计、设计模式、UML建模</div>
+                                        </div>
+                                        <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+                                            <div style="font-weight: 600; margin-bottom: 5px;">第8-10周：编码与实现</div>
+                                            <div style="color: var(--text-secondary); font-size: 14px;">编码规范、版本控制、代码审查、持续集成</div>
+                                        </div>
+                                        <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+                                            <div style="font-weight: 600; margin-bottom: 5px;">第11-13周：软件测试</div>
+                                            <div style="color: var(--text-secondary); font-size: 14px;">测试策略、单元测试、集成测试、自动化测试</div>
+                                        </div>
+                                        <div style="padding: 20px;">
+                                            <div style="font-weight: 600; margin-bottom: 5px;">第14-16周：项目管理与实践</div>
+                                            <div style="color: var(--text-secondary); font-size: 14px;">敏捷开发、Scrum、团队协作、综合项目实践</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 考核方式 -->
+                                <div class="section">
+                                    <h3 style="font-size: 20px; margin-bottom: 15px;">📊 考核方式</h3>
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                        <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 5px;">平时作业</div>
+                                            <div style="font-size: 28px; font-weight: bold; color: var(--primary);">30%</div>
+                                        </div>
+                                        <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 5px;">课程项目</div>
+                                            <div style="font-size: 28px; font-weight: bold; color: var(--primary);">40%</div>
+                                        </div>
+                                        <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 5px;">期末考试</div>
+                                            <div style="font-size: 28px; font-weight: bold; color: var(--primary);">30%</div>
+                                        </div>
+                                        <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 5px;">课堂参与</div>
+                                            <div style="font-size: 28px; font-weight: bold; color: var(--primary);">额外加分</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar -->
+                            <div>
+                                <div class="sidebar">
+                                    <div class="sidebar-section">
+                                        <div class="sidebar-title">📥 课程资料</div>
+                                        <div class="sidebar-item">📄 课程大纲.pdf</div>
+                                        <div class="sidebar-item">📊 第1章课件.pptx</div>
+                                        <div class="sidebar-item">📊 第2章课件.pptx</div>
+                                        <div class="sidebar-item">💻 示例代码.zip</div>
+                                        <button class="btn-primary" style="width: 100%; margin-top: 15px;">查看全部资料</button>
+                                    </div>
+
+                                    <div class="sidebar-section">
+                                        <div class="sidebar-title">📝 最新作业</div>
+                                        <div style="background: white; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+                                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 5px;">作业3：系统设计</div>
+                                            <div style="font-size: 13px; color: var(--text-secondary);">截止：3月15日 23:59</div>
+                                            <div style="margin-top: 10px; padding: 6px 12px; background: #fff3cd; border-radius: 4px; font-size: 12px; color: #856404;">待提交</div>
+                                        </div>
+                                        <button class="btn-primary" style="width: 100%;">提交作业</button>
+                                    </div>
+
+                                    <div class="sidebar-section">
+                                        <div class="sidebar-title">👨‍🏫 教师信息</div>
+                                        <div style="background: white; border-radius: 6px; padding: 15px;">
+                                            <div style="font-weight: 600; margin-bottom: 10px;">张伟 教授</div>
+                                            <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">📧 zhang.wei@university.edu.cn</div>
+                                            <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">🏢 科研楼 B306</div>
+                                            <div style="font-size: 13px; color: var(--text-secondary);">⏰ 答疑时间：周三 15:00-17:00</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note" style="margin-top: 30px;">
+                <strong>设计说明：</strong><br>
+                • 视觉化的课程头部，突出关键信息<br>
+                • Tab 导航切换不同内容板块<br>
+                • 侧边栏提供快速操作入口<br>
+                • 清晰的教学大纲时间线展示
+            </div>
+        </div>
+
+        <!-- 资源中心 -->
+        <div id="resources" class="page-view">
+            <div class="mockup">
+                <div class="mockup-browser-bar">
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                </div>
+                <div class="mockup-content">
+                    <div class="header">
+                        <div class="header-top">
+                            <div class="logo">张教授的学术空间</div>
+                            <nav class="header-nav">
+                                <a href="#home">首页</a>
+                                <a href="#courses">课程</a>
+                                <a href="#resources" style="background: var(--bg-gray); color: var(--primary);">资源</a>
+                                <a href="#students">学生</a>
+                                <a href="#contact">联系我</a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="main-content">
+                        <h1 style="font-size: 32px; margin-bottom: 10px;">📚 资源中心</h1>
+                        <p style="color: var(--text-secondary); margin-bottom: 40px;">教材、工具、代码示例等教学资源</p>
+
+                        <!-- 分类标签 -->
+                        <div style="margin-bottom: 30px;">
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <div style="padding: 8px 20px; background: var(--primary); color: white; border-radius: 20px; cursor: pointer;">全部</div>
+                                <div style="padding: 8px 20px; background: var(--bg-gray); border-radius: 20px; cursor: pointer;">教材推荐</div>
+                                <div style="padding: 8px 20px; background: var(--bg-gray); border-radius: 20px; cursor: pointer;">开发工具</div>
+                                <div style="padding: 8px 20px; background: var(--bg-gray); border-radius: 20px; cursor: pointer;">代码示例</div>
+                                <div style="padding: 8px 20px; background: var(--bg-gray); border-radius: 20px; cursor: pointer;">视频教程</div>
+                            </div>
+                        </div>
+
+                        <!-- 资源列表 -->
+                        <div class="section">
+                            <h2 class="section-title">📖 教材推荐</h2>
+                            <div class="card-grid">
+                                <div class="card">
+                                    <div style="background: var(--bg-gray); height: 150px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; font-size: 48px;">📕</div>
+                                    <div class="card-title">软件工程：实践者的研究方法</div>
+                                    <div class="card-meta">Roger S. Pressman 著</div>
+                                    <div class="card-description">经典软件工程教材，适合本科生和研究生</div>
+                                    <button class="btn-primary" style="width: 100%; margin-top: 15px;">查看详情</button>
+                                </div>
+                                <div class="card">
+                                    <div style="background: var(--bg-gray); height: 150px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; font-size: 48px;">📘</div>
+                                    <div class="card-title">设计模式：可复用面向对象软件的基础</div>
+                                    <div class="card-meta">Gang of Four 著</div>
+                                    <div class="card-description">软件设计模式经典之作</div>
+                                    <button class="btn-primary" style="width: 100%; margin-top: 15px;">查看详情</button>
+                                </div>
+                                <div class="card">
+                                    <div style="background: var(--bg-gray); height: 150px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; font-size: 48px;">📙</div>
+                                    <div class="card-title">代码大全</div>
+                                    <div class="card-meta">Steve McConnell 著</div>
+                                    <div class="card-description">程序构建百科全书</div>
+                                    <button class="btn-primary" style="width: 100%; margin-top: 15px;">查看详情</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h2 class="section-title">🛠️ 开发工具</h2>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>工具名称</th>
+                                            <th>类别</th>
+                                            <th>说明</th>
+                                            <th>下载</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Visual Studio Code</strong></td>
+                                            <td>代码编辑器</td>
+                                            <td>轻量级、功能强大的代码编辑器</td>
+                                            <td><a href="#" style="color: var(--primary);">官网链接</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Git</strong></td>
+                                            <td>版本控制</td>
+                                            <td>分布式版本控制系统</td>
+                                            <td><a href="#" style="color: var(--primary);">官网链接</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Postman</strong></td>
+                                            <td>API测试</td>
+                                            <td>API开发和测试工具</td>
+                                            <td><a href="#" style="color: var(--primary);">官网链接</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Docker</strong></td>
+                                            <td>容器化</td>
+                                            <td>应用容器化部署平台</td>
+                                            <td><a href="#" style="color: var(--primary);">官网链接</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h2 class="section-title">💻 代码示例</h2>
+                            <div class="list-item">
+                                <div class="list-item-icon">📦</div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">设计模式示例代码</div>
+                                    <div class="list-item-meta">Java 实现的 23 种设计模式 | 2.3 MB | 下载 156 次</div>
+                                </div>
+                                <button class="list-item-action">下载</button>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-item-icon">📦</div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">Spring Boot 项目模板</div>
+                                    <div class="list-item-meta">包含常用配置和最佳实践 | 5.8 MB | 下载 203 次</div>
+                                </div>
+                                <button class="list-item-action">下载</button>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-item-icon">📦</div>
+                                <div class="list-item-content">
+                                    <div class="list-item-title">微服务架构示例</div>
+                                    <div class="list-item-meta">完整的微服务项目示例 | 12.5 MB | 下载 98 次</div>
+                                </div>
+                                <button class="list-item-action">下载</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note" style="margin-top: 30px;">
+                <strong>设计说明：</strong><br>
+                • 分类标签快速筛选不同类型资源<br>
+                • 多种展示方式：卡片、表格、列表<br>
+                • 显示下载次数，体现资源热度<br>
+                • 清晰的下载按钮和链接
+            </div>
+        </div>
+
+        <!-- 学生指导 -->
+        <div id="students" class="page-view">
+            <div class="mockup">
+                <div class="mockup-browser-bar">
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                </div>
+                <div class="mockup-content">
+                    <div class="header">
+                        <div class="header-top">
+                            <div class="logo">张教授的学术空间</div>
+                            <nav class="header-nav">
+                                <a href="#home">首页</a>
+                                <a href="#courses">课程</a>
+                                <a href="#resources">资源</a>
+                                <a href="#students" style="background: var(--bg-gray); color: var(--primary);">学生</a>
+                                <a href="#contact">联系我</a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="main-content">
+                        <h1 style="font-size: 32px; margin-bottom: 10px;">👨‍🎓 学生指导</h1>
+                        <p style="color: var(--text-secondary); margin-bottom: 40px;">在读学生、毕业去向及招生信息</p>
+
+                        <!-- Tab 导航 -->
+                        <div style="border-bottom: 2px solid var(--border); margin-bottom: 30px;">
+                            <div style="display: flex; gap: 0;">
+                                <div style="padding: 12px 24px; border-bottom: 3px solid var(--primary); margin-bottom: -2px; font-weight: 600; color: var(--primary); cursor: pointer;">在读学生</div>
+                                <div style="padding: 12px 24px; color: var(--text-secondary); cursor: pointer;">毕业学生</div>
+                                <div style="padding: 12px 24px; color: var(--text-secondary); cursor: pointer;">招生信息</div>
+                            </div>
+                        </div>
+
+                        <!-- 统计卡片 -->
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px;">
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; color: white;">
+                                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">博士生</div>
+                                <div style="font-size: 36px; font-weight: bold;">5 人</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 12px; color: white;">
+                                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">硕士生</div>
+                                <div style="font-size: 36px; font-weight: bold;">12 人</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 25px; border-radius: 12px; color: white;">
+                                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">本科生</div>
+                                <div style="font-size: 36px; font-weight: bold;">6 人</div>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 25px; border-radius: 12px; color: white;">
+                                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">已毕业</div>
+                                <div style="font-size: 36px; font-weight: bold;">38 人</div>
+                            </div>
+                        </div>
+
+                        <!-- 博士生 -->
+                        <div class="section">
+                            <h2 class="section-title">🎓 博士研究生</h2>
+                            <div class="card-grid">
+                                <div class="card">
+                                    <div style="text-align: center; margin-bottom: 15px;">
+                                        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-gray); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 36px;">👨</div>
+                                    </div>
+                                    <div class="card-title" style="text-align: center;">李明</div>
+                                    <div class="card-meta" style="text-align: center;">2021级博士生</div>
+                                    <div style="margin: 15px 0;">
+                                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">研究方向</div>
+                                        <div style="font-size: 14px;">分布式系统、微服务架构</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">研究进展</div>
+                                    <div style="background: var(--bg-gray); height: 8px; border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 75%; height: 100%; background: var(--primary);"></div>
+                                    </div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">已发表论文 3 篇</div>
+                                </div>
+                                <div class="card">
+                                    <div style="text-align: center; margin-bottom: 15px;">
+                                        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-gray); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 36px;">👩</div>
+                                    </div>
+                                    <div class="card-title" style="text-align: center;">王芳</div>
+                                    <div class="card-meta" style="text-align: center;">2022级博士生</div>
+                                    <div style="margin: 15px 0;">
+                                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">研究方向</div>
+                                        <div style="font-size: 14px;">云计算、容器编排</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">研究进展</div>
+                                    <div style="background: var(--bg-gray); height: 8px; border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 60%; height: 100%; background: var(--primary);"></div>
+                                    </div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">已发表论文 2 篇</div>
+                                </div>
+                                <div class="card">
+                                    <div style="text-align: center; margin-bottom: 15px;">
+                                        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-gray); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 36px;">👨</div>
+                                    </div>
+                                    <div class="card-title" style="text-align: center;">张强</div>
+                                    <div class="card-meta" style="text-align: center;">2023级博士生</div>
+                                    <div style="margin: 15px 0;">
+                                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">研究方向</div>
+                                        <div style="font-size: 14px;">软件质量保障、自动化测试</div>
+                                    </div>
+                                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">研究进展</div>
+                                    <div style="background: var(--bg-gray); height: 8px; border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 40%; height: 100%; background: var(--primary);"></div>
+                                    </div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">已发表论文 1 篇</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 硕士生 -->
+                        <div class="section">
+                            <h2 class="section-title">🎓 硕士研究生</h2>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>姓名</th>
+                                            <th>年级</th>
+                                            <th>研究方向</th>
+                                            <th>论文题目</th>
+                                            <th>状态</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>陈浩</strong></td>
+                                            <td>2022级</td>
+                                            <td>DevOps</td>
+                                            <td>基于容器的持续集成系统研究</td>
+                                            <td><span style="color: #27c93f;">进行中</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>刘洋</strong></td>
+                                            <td>2022级</td>
+                                            <td>软件架构</td>
+                                            <td>微服务架构模式在电商系统中的应用</td>
+                                            <td><span style="color: #27c93f;">进行中</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>赵敏</strong></td>
+                                            <td>2023级</td>
+                                            <td>软件测试</td>
+                                            <td>基于AI的自动化测试用例生成</td>
+                                            <td><span style="color: #ffbd2e;">开题中</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>孙丽</strong></td>
+                                            <td>2023级</td>
+                                            <td>云计算</td>
+                                            <td>Serverless架构性能优化研究</td>
+                                            <td><span style="color: #ffbd2e;">开题中</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 招生信息 -->
+                        <div class="section">
+                            <h2 class="section-title">📢 招生信息</h2>
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 12px; color: white;">
+                                <h3 style="font-size: 24px; margin-bottom: 20px;">2025年研究生招生</h3>
+                                <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+                                    <h4 style="font-size: 18px; margin-bottom: 15px;">招生方向</h4>
+                                    <ul style="list-style: none;">
+                                        <li style="padding: 8px 0;">✓ 软件架构与设计模式</li>
+                                        <li style="padding: 8px 0;">✓ 云原生应用开发</li>
+                                        <li style="padding: 8px 0;">✓ 微服务与分布式系统</li>
+                                        <li style="padding: 8px 0;">✓ DevOps 与持续交付</li>
+                                        <li style="padding: 8px 0;">✓ 软件质量保障与测试</li>
+                                    </ul>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 8px;">
+                                    <h4 style="font-size: 18px; margin-bottom: 15px;">申请要求</h4>
+                                    <ul style="list-style: none;">
+                                        <li style="padding: 8px 0;">• 计算机、软件工程相关专业本科/硕士学位</li>
+                                        <li style="padding: 8px 0;">• 扎实的编程基础（Java/Python/Go等）</li>
+                                        <li style="padding: 8px 0;">• 良好的英语读写能力</li>
+                                        <li style="padding: 8px 0;">• 对科研工作有浓厚兴趣</li>
+                                        <li style="padding: 8px 0;">• 有项目经验或论文发表者优先</li>
+                                    </ul>
+                                </div>
+                                <div style="margin-top: 25px; text-align: center;">
+                                    <button class="btn-primary" style="background: white; color: var(--primary); font-size: 16px; padding: 14px 32px;">联系我了解更多</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note" style="margin-top: 30px;">
+                <strong>设计说明：</strong><br>
+                • 统计卡片直观展示学生构成<br>
+                • 博士生使用卡片展示，突出个人信息和研究进展<br>
+                • 硕士生使用表格展示，信息密度更高<br>
+                • 招生信息使用醒目的视觉设计吸引潜在申请者
+            </div>
+        </div>
+
+        <!-- 后台管理 -->
+        <div id="admin" class="page-view">
+            <div class="mockup">
+                <div class="mockup-browser-bar">
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                    <span class="browser-dot"></span>
+                </div>
+                <div class="mockup-content">
+                    <!-- 后台 Header -->
+                    <div style="background: var(--text-primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 18px; font-weight: 600;">🛠️ 后台管理系统</div>
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <div style="font-size: 14px;">欢迎，张教授</div>
+                            <button style="padding: 6px 16px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 6px; cursor: pointer;">退出登录</button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; min-height: 600px;">
+                        <!-- 侧边导航 -->
+                        <div style="width: 220px; background: var(--bg-gray); padding: 20px; border-right: 1px solid var(--border);">
+                            <div style="margin-bottom: 25px;">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 600;">内容管理</div>
+                                <div style="padding: 10px 15px; background: var(--primary); color: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">📊 仪表盘</div>
+                                <div style="padding: 10px 15px; background: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">📚 课程管理</div>
+                                <div style="padding: 10px 15px; background: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">📁 资源管理</div>
+                                <div style="padding: 10px 15px; background: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">📝 作业管理</div>
+                                <div style="padding: 10px 15px; background: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">📢 通知管理</div>
+                            </div>
+                            <div style="margin-bottom: 25px;">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 600;">用户管理</div>
+                                <div style="padding: 10px 15px; background: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">👥 学生管理</div>
+                                <div style="padding: 10px 15px; background: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">👤 个人资料</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 600;">系统设置</div>
+                                <div style="padding: 10px 15px; background: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">⚙️ 网站配置</div>
+                                <div style="padding: 10px 15px; background: white; border-radius: 6px; margin-bottom: 5px; cursor: pointer;">💾 数据备份</div>
+                            </div>
+                        </div>
+
+                        <!-- 主内容区 -->
+                        <div style="flex: 1; padding: 30px;">
+                            <h2 style="font-size: 24px; margin-bottom: 25px;">📊 数据概览</h2>
+
+                            <!-- 统计卡片 -->
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px;">
+                                <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">本周访问量</div>
+                                    <div style="font-size: 28px; font-weight: bold; color: var(--primary); margin-bottom: 10px;">1,247</div>
+                                    <div style="font-size: 12px; color: #27c93f;">↑ 12% 较上周</div>
+                                </div>
+                                <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">课程资料</div>
+                                    <div style="font-size: 28px; font-weight: bold; color: var(--primary); margin-bottom: 10px;">156</div>
+                                    <div style="font-size: 12px; color: #27c93f;">↑ 8 份新增</div>
+                                </div>
+                                <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">待批改作业</div>
+                                    <div style="font-size: 28px; font-weight: bold; color: #ff5f56; margin-bottom: 10px;">23</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">需要处理</div>
+                                </div>
+                                <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 5px;">在读学生</div>
+                                    <div style="font-size: 28px; font-weight: bold; color: var(--primary); margin-bottom: 10px;">23</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">5博士 + 12硕士 + 6本科</div>
+                                </div>
+                            </div>
+
+                            <!-- 最近活动 -->
+                            <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                                <h3 style="font-size: 18px; margin-bottom: 20px;">📋 最近活动</h3>
+                                <div style="border-left: 3px solid var(--primary); padding-left: 20px;">
+                                    <div style="margin-bottom: 20px;">
+                                        <div style="font-size: 14px; font-weight: 600; margin-bottom: 5px;">李明 提交了作业</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">软件架构 - 作业3 | 2分钟前</div>
+                                    </div>
+                                    <div style="margin-bottom: 20px;">
+                                        <div style="font-size: 14px; font-weight: 600; margin-bottom: 5px;">上传了新的课程资料</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">第5章课件.pptx | 1小时前</div>
+                                    </div>
+                                    <div style="margin-bottom: 20px;">
+                                        <div style="font-size: 14px; font-weight: 600; margin-bottom: 5px;">发布了新通知</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">下周一课程调整通知 | 3小时前</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 14px; font-weight: 600; margin-bottom: 5px;">王芳 提交了论文初稿</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">论文_v1.0.pdf | 昨天 15:30</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 快速操作 -->
+                            <div>
+                                <h3 style="font-size: 18px; margin-bottom: 20px;">⚡ 快速操作</h3>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                    <button class="btn-primary" style="padding: 20px; font-size: 15px;">
+                                        <div style="font-size: 24px; margin-bottom: 8px;">📚</div>
+                                        创建新课程
+                                    </button>
+                                    <button class="btn-primary" style="padding: 20px; font-size: 15px; background: #f5576c;">
+                                        <div style="font-size: 24px; margin-bottom: 8px;">📁</div>
+                                        上传资料
+                                    </button>
+                                    <button class="btn-primary" style="padding: 20px; font-size: 15px; background: #764ba2;">
+                                        <div style="font-size: 24px; margin-bottom: 8px;">📢</div>
+                                        发布通知
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note" style="margin-top: 30px;">
+                <strong>设计说明：</strong><br>
+                • 清晰的侧边导航，功能模块分组<br>
+                • 仪表盘展示关键数据和待办事项<br>
+                • 活动时间线，实时掌握动态<br>
+                • 快速操作入口，提高管理效率
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page-view').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示选中的页面
+            document.getElementById(pageId).classList.add('active');
+            
+            // 更新按钮状态
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
